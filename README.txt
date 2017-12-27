@@ -1,0 +1,1 @@
+Input info from receipts to be saved in excel sheets.
