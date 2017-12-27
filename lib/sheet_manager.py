@@ -22,20 +22,27 @@ def addEntry(filename, sheet, entry):
     # Check if a tuple or not (for index reasons).
     if(isinstance(entry, tuple) or isinstance(entry, list)):
         #print("Tuple")
+        if(entry is None):
+            return False
         # Loop through tuple indexes.
         for i in range(len(entry)):
-            # If formula
-            a = entry[i][0]
+            
             style = xlwt.XFStyle()
-            if(a == '='):
+
+            if(entry[i] is None):
+                pass
+            # If number
+            elif(is_number(entry[i])):
+                #print("Number: " + str(entry[i]))
+                sh.write(rowCount, i, label=entry[i])
+            # If formula
+            elif(False and entry[i][0] == '='):
                 formula = entry[i][1:]
                 print("Formula: " + formula)
                 #sh.write(rowCount, i, xlwt.Formula('%s' % formula))
-                sh.write(rowCount, i, xlwt.Formula("-(134.8780789e-10+1)"))
-            # If number
-            elif(a == '0' or a == '1' or a == '2' or a == '3' or a == '4' or
-                    a == '5' or a == '6' or a == '7' or a == '8' or a == '9'):
-                sh.write(rowCount, i, label=entry[i])
+                #sh.write(rowCount, i, xlwt.Formula("-(134.8780789e-10+1)"))
+                sh.write(rowCount, i, xlwt.Formula(formula))
+                # If default input style
             else:
                 sh.write(rowCount, i, label=entry[i])
     else:
@@ -43,6 +50,24 @@ def addEntry(filename, sheet, entry):
         sh.write(rowCount, 0, entry)
     #book.get_sheet(0).write(0, 0, entry)
     wb.save(filename)
+    return True
+
+
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        pass
+ 
+    try:
+        import unicodedata
+        unicodedata.numeric(s)
+        return True
+    except (TypeError, ValueError):
+        pass
+
+    return False
 
 
 def addSheet(filename, sheet):
@@ -80,3 +105,13 @@ def addFile(filename, sheet):
     sh = book.add_sheet(sheet)
     book.save(filename)
     return True
+
+
+# Not working
+# https://youtu.be/x18V8SyNiXo
+def setColWidth(filename, sheet, c, w):
+    rb = xlrd.open_workbook(filename)
+    wb = xl_copy(rb)
+    sh = wb.get_sheet(0)
+    sh.col(c).width = w
+    wb.save(filename)

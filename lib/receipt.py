@@ -32,11 +32,11 @@ class receipt:
 
 
     def getAll(self):
-        return [
+        return (
             self.Store,
             self.Location,
             self.Date,
             self.Time,
             self.Price,
             self.Type
-        ]
+        )

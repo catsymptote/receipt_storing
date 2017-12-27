@@ -7,24 +7,79 @@ from lib import sheet_manager
 class receipt_window:
     ## Basic window class for adding a recipt.
     filename    = "2017.xls"
-    sheet       = "12 - December"
+    sheet       = "12 - December"   
+
 
     def __init__(self, master_window):
         frame = Frame(master_window)
         frame.pack()
         ## Construct the window
-        self.label_one = Label(frame, text="Hello there.")
-        self.label_one.grid(row=0)
-
         self.checkbox_one = Checkbutton(frame, text="Hi there")
-        self.checkbox_one.grid(columnspan=2, row=1)
+        self.checkbox_one.grid(columnspan=1, row=1, column=4)
+
+        self.init_button = Button(frame, text="Initialize", command=self.initSheet)
+        self.init_button.grid(columnspan=1, row=0, column=4)
+
+        self.add_button = Button(frame, text="Add recipt", command=self.makeReceipt)
+        self.add_button.grid(columnspan=1, row=6, column=1)
+
+        ## Entry with labels
+        self.label_one = Label(frame, text="Store")
+        self.label_one.grid(row=0, column=0, sticky=W)
+        self.entry_Store = Entry(frame)
+        self.entry_Store.grid(columnspan=3, row=0, column=1)
+
+        self.label_one = Label(frame, text="Location")
+        self.label_one.grid(row=1, column=0, sticky=W)
+        self.entry_Location = Entry(frame)
+        self.entry_Location.grid(columnspan=3, row=1, column=1)
+        
+        self.label_one = Label(frame, text="Date")
+        self.label_one.grid(row=2, column=0, sticky=W)
+        self.entry_Date = Entry(frame)
+        self.entry_Date.grid(columnspan=3, row=2, column=1)
+
+        self.label_one = Label(frame, text="Time")
+        self.label_one.grid(row=3, column=0, sticky=W)
+        self.entry_Time = Entry(frame)
+        self.entry_Time.grid(columnspan=3, row=3, column=1)
+
+        self.label_one = Label(frame, text="Price")
+        self.label_one.grid(row=4, column=0, sticky=W)
+        self.entry_Price = Entry(frame)
+        self.entry_Price.grid(columnspan=3, row=4, column=1)
+
+        self.label_one = Label(frame, text="Type")
+        self.label_one.grid(row=5, column=0, sticky=W)
+        self.entry_Type = Entry(frame)
+        self.entry_Type.grid(columnspan=3, row=5, column=1)
 
 
     def makeReceipt(self):
-        rept = receipt.receipt("Meny", "Kongsberg", "2017.11.24", "22:48", "299,90", "Food")
+        #rept = receipt.receipt("Meny", "Kongsberg", "2017.11.24", "22:48", 299.90, "Food")
+
+        Store   = self.entry_Store.get()
+        Location= self.entry_Location.get()
+        Date    = self.entry_Date.get()
+        Time    = self.entry_Time.get()
+        Price   = self.entry_Price.get()
+        Type    = self.entry_Type.get()
+
+        rept = receipt.receipt(Store, Location, Date, Time, Price, Type)
         reptEntry = rept.getAll()
-        sheet_manager.addEntry(self.filename, self.sheet, reptEntry)
+        if(sheet_manager.addEntry(self.filename, self.sheet, reptEntry)):
+           # Clear entries
+           self.clearEntries()
         #print(rept.getAll())
+
+
+    def clearEntries(self):
+        self.entry_Store.delete(0, 'end')
+        self.entry_Location.delete(0, 'end')
+        self.entry_Date.delete(0, 'end')
+        self.entry_Time.delete(0, 'end')
+        self.entry_Price.delete(0, 'end')
+        self.entry_Type.delete(0, 'end')
 
 
     def initSheet(self):
@@ -39,11 +94,20 @@ class receipt_window:
         
         sheet_manager.addEntry(
             self.filename, self.sheet,
-            [self.sheet, " ", " ", "Total:", "=SUM(E5:E10000)", "=4+5", "hi"])
+            [self.sheet, " ", " ", "Total:", "=SUM(E3:E10000)"])
         sheet_manager.addEntry(
             self.filename, self.sheet,
-            ("Store", "Location", "Date", "Time", "Price", "Type"))
+            ["Store", "Location", "Date", "Time", "Price", "Type"])
         sheet_manager.addEntry(
             self.filename, self.sheet,
             " ")
+        
+        # Not working
+        sheet_manager.setColWidth(self.filename, self.sheet, 0, 100)
+        sheet_manager.setColWidth(self.filename, self.sheet, 1, 100)
+        sheet_manager.setColWidth(self.filename, self.sheet, 2, 50)
+        sheet_manager.setColWidth(self.filename, self.sheet, 3, 50)
+        sheet_manager.setColWidth(self.filename, self.sheet, 4, 100)
+        sheet_manager.setColWidth(self.filename, self.sheet, 5, 500)
+
         return True

@@ -20,8 +20,8 @@ root_window = Tk()  # Window constructor / blank window
 
 
 reptWin = receipt_window.receipt_window(root_window)
-reptWin.initSheet()
-reptWin.makeReceipt()
+#reptWin.initSheet()
+#reptWin.makeReceipt()
 
 #if(add_rept.new_file()):
     ## New window: add new file? (Yes/No). Display file info.
