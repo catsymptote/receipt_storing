@@ -14,8 +14,6 @@ sheet_manager.addFile("mep2.xls", "Sheet maf")
 
 
 
-
-
 # Start ----------
 root_window = Tk()  # Window constructor / blank window
 # Start ----------

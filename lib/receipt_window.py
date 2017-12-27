@@ -1,8 +1,9 @@
 from tkinter import *
 
-from lib import recipt
+from lib import receipt
 
-class recipt_window:
+
+class reciept_window:
     ## Basic window class for adding a recipt.
 
     def __init__(self, master_window):
@@ -16,11 +17,12 @@ class recipt_window:
         self.checkbox_one.grid(columnspan=2, row=1)
         self.printMessage()
 
+
     def printMessage(self):
         print("Here is the printed message.")
         sys.stdout.flush()
 
 
-    def makeRecipt(self):
-        rept = recipt.recipt("hi", [2017, 12, 24], 3.14, "Food")
+    def makeReceipt(self):
+        rept = receipt.receipt("hi", [2017, 12, 24], 3.14, "Food")
         print(rept.getAll())
