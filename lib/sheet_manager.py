@@ -1,30 +1,48 @@
 import xlrd, xlwt
 from xlutils.copy import copy as xl_copy
+from xlutils.margins import number_of_good_rows
 from xlrd import *
+from xlwt import *
 from openpyxl import load_workbook
 import os.path
 
 
 def addEntry(filename, sheet, entry):
     ## https://stackoverflow.com/questions/2725852/writing-to-existing-workbook-using-xlwt
-    book = xl_copy(open_workbook(filename))
-    for i in range(len(entry)):
-        book.get_sheet(0).write(0, i, entry[i])
+    rb = xlrd.open_workbook(filename)
+    wb = xl_copy(rb)
+    #book = xl_copy(open_workbook(filename))
+    # Get number of rows
+    sheets = rb.sheets()
+    rowCount = sheets[0].nrows
+    #print(rowCount)
+    sh = wb.get_sheet(0)
+    #print(sh.max_row)
+
+    # Check if a tuple or not (for index reasons).
+    if(isinstance(entry, tuple) or isinstance(entry, list)):
+        #print("Tuple")
+        # Loop through tuple indexes.
+        for i in range(len(entry)):
+            # If formula
+            a = entry[i][0]
+            style = xlwt.XFStyle()
+            if(a == '='):
+                formula = entry[i][1:]
+                print("Formula: " + formula)
+                #sh.write(rowCount, i, xlwt.Formula('%s' % formula))
+                sh.write(rowCount, i, xlwt.Formula("-(134.8780789e-10+1)"))
+            # If number
+            elif(a == '0' or a == '1' or a == '2' or a == '3' or a == '4' or
+                    a == '5' or a == '6' or a == '7' or a == '8' or a == '9'):
+                sh.write(rowCount, i, label=entry[i])
+            else:
+                sh.write(rowCount, i, label=entry[i])
+    else:
+        #print("Not tuple")
+        sh.write(rowCount, 0, entry)
     #book.get_sheet(0).write(0, 0, entry)
-    book.save(filename)
-
-
-"""
-def addEntry2(filename, sheet, entry):
-    book = xlwt.Workbook()
-    sh = book.add_sheet(sheet)
-    col1_name = "Hello there"
-    col2_name = "maff maff"
-    sh.write(0, 0, col1_name)
-    sh.write(0, 1, col2_name)
-    #sh.write(y, x, output)
-    book.save(filename)
-"""
+    wb.save(filename)
 
 
 def addSheet(filename, sheet):
@@ -47,7 +65,7 @@ def addSheet(filename, sheet):
     try:
         Sheet1 = wb.add_sheet(sheet)
     except Exception:
-        print("Sheet already exists")
+        #print("Sheet already exists")
         return False
     wb.save(filename)
     return True
@@ -56,7 +74,7 @@ def addSheet(filename, sheet):
 def addFile(filename, sheet):
     ## https://stackoverflow.com/questions/13437727/python-write-to-excel-spreadsheet
     if(os.path.exists(filename)):
-        print("File already exists")
+        #print("File already exists")
         return False
     book = xlwt.Workbook()
     sh = book.add_sheet(sheet)
