@@ -111,10 +111,11 @@ class receipt_window:
             print("Sheet already exists")
             return False
         
+        month = self.monthToName(self.sheet)
 
         sheet_manager.addEntry(
             self.filePath, self.sheet,
-            [self.sheet, " ", " ", "Total:", "=SUM(E4:E10000)"])
+            [month, " ", " ", "Total:", "=SUM(E4:E10000)"])
 
         sheet_manager.addEntry(self.filePath, self.sheet, " ")
 
@@ -136,3 +137,21 @@ class receipt_window:
         sheet_manager.setColWidth(self.filePath, self.sheet, 5, 5000)
 
         return True
+
+
+    ## Return month as name
+    def monthToName(self, sheet):
+        return {
+            "01" : "January",
+            "02" : "February",
+            "03" : "March",
+            "04" : "April",
+            "05" : "May",
+            "06" : "June",
+            "07" : "July",
+            "08" : "August",
+            "09" : "September",
+            "10" : "October",
+            "11" : "November",
+            "12" : "December"
+        }.get(sheet, "none")
