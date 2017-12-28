@@ -14,9 +14,13 @@ def addEntry(filename, sheet, entry):
     #book = xl_copy(open_workbook(filename))
     # Get number of rows
     sheets = rb.sheets()
-    rowCount = sheets[0].nrows
+    sheetIndex = get_sheet_by_name(sheets, sheet)
+    if(sheetIndex == -1):
+        #print("Sheet not found.")
+        return False
+    rowCount = sheets[sheetIndex].nrows
     #print(rowCount)
-    sh = wb.get_sheet(0)
+    sh = wb.get_sheet(sheetIndex)
     #print(sh.max_row)
 
     # Check if a tuple or not (for index reasons).
@@ -53,6 +57,25 @@ def addEntry(filename, sheet, entry):
     return True
 
 
+def get_sheet_by_name(sheets, sheet):
+    ## https://stackoverflow.com/questions/14587271/accessing-worksheets-using-xlwt-get-sheet-method
+    """Get a sheet by name from xlwt.Workbook, a strangely missing method.
+    Returns None if no sheet with the given name is present.
+    """
+    # Note, we have to use exceptions for flow control because the
+    # xlwt API is broken and gives us no other choice.
+    try:
+        #for i in xlrd.itertools.count():
+        for i in range(len(sheets)):
+            #print(sheets[i].name)
+            #sheet = book.get_sheet(i)
+            if(sheets[i].name == sheet):
+                return i
+    except IndexError:
+        print("Sheet lookup failed.")
+        return -1
+
+
 def is_number(s):
     try:
         float(s)
@@ -70,13 +93,23 @@ def is_number(s):
     return False
 
 
+def makeSheet(filename, sheet):
+    if(not os.path.exists(filename)):
+        addFile(filename, sheet)
+        return True
+    elif(addSheet(filename, sheet)):
+        return True
+    return False
+    
+
+
 def addSheet(filename, sheet):
     ## https://stackoverflow.com/questions/38081658/adding-a-sheet-to-an-existing-excel-worksheet-without-deleting-other-sheet
-
     # Open existing workbook
     rb = xlrd.open_workbook(filename, formatting_info=True)
     # Make a copy of it
     wb = xl_copy(rb)
+    
 
     # Check if sheet already exists
     ## https://stackoverflow.com/questions/37966536/python-validate-if-a-sheet-exists-in-my-document-xls
@@ -98,9 +131,9 @@ def addSheet(filename, sheet):
 
 def addFile(filename, sheet):
     ## https://stackoverflow.com/questions/13437727/python-write-to-excel-spreadsheet
-    if(os.path.exists(filename)):
+    #if(os.path.exists(filename)):
         #print("File already exists")
-        return False
+        #return False
     book = xlwt.Workbook()
     sh = book.add_sheet(sheet)
     book.save(filename)

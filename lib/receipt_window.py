@@ -6,23 +6,19 @@ from lib import sheet_manager
 
 class receipt_window:
     ## Basic window class for adding a recipt.
-    filename    = "2017.xls"
-    sheet       = "12 - December"   
+    directory       = "sheets/"
+    filename        = "test"
+    fileExtension   = ".xls"
+    filePath        = "sheets/default.xls"
 
+    sheet           = "12"
+    
 
     def __init__(self, master_window):
         frame = Frame(master_window)
         frame.pack()
         ## Construct the window
-        self.checkbox_one = Checkbutton(frame, text="Hi there")
-        self.checkbox_one.grid(columnspan=1, row=1, column=4)
-
-        self.init_button = Button(frame, text="Initialize", command=self.initSheet)
-        self.init_button.grid(columnspan=1, row=0, column=4)
-
-        self.add_button = Button(frame, text="Add recipt", command=self.makeReceipt)
-        self.add_button.grid(columnspan=1, row=6, column=1)
-
+        
         ## Entry with labels
         self.label_one = Label(frame, text="Store")
         self.label_one.grid(row=0, column=0, sticky=W)
@@ -54,6 +50,16 @@ class receipt_window:
         self.entry_Type = Entry(frame)
         self.entry_Type.grid(columnspan=3, row=5, column=1)
 
+        self.add_button = Button(frame, text="Add recipt", command=self.makeReceipt)
+        self.add_button.grid(columnspan=3, row=6, column=1)
+
+
+        self.checkbox_one = Checkbutton(frame, text="Hi there")
+        self.checkbox_one.grid(columnspan=1, row=1, column=4)
+
+        self.init_button = Button(frame, text="Initialize", command=self.initSheet)
+        self.init_button.grid(columnspan=1, row=0, column=4)
+
 
     def makeReceipt(self):
         #rept = receipt.receipt("Meny", "Kongsberg", "2017.11.24", "22:48", 299.90, "Food")
@@ -67,9 +73,23 @@ class receipt_window:
 
         rept = receipt.receipt(Store, Location, Date, Time, Price, Type)
         reptEntry = rept.getAll()
-        if(sheet_manager.addEntry(self.filename, self.sheet, reptEntry)):
+
+        """
+        print(rept.getYear())
+        print(rept.getMonth())
+        """
+
+        self.filename   = rept.getYear()
+        self.sheet      = rept.getMonth()
+
+        self.filePath = self.directory + self.filename + self.fileExtension
+        
+        self.initSheet()
+
+        if(sheet_manager.addEntry(self.filePath, self.sheet, reptEntry)):
            # Clear entries
            self.clearEntries()
+           print("Entry add successful!")
         #print(rept.getAll())
 
 
@@ -83,31 +103,36 @@ class receipt_window:
 
 
     def initSheet(self):
-        #now = datetime.datetime.now()
-        #month   = now.month
-        #year    = now.year
+        # If not make file -> file already exists
+        #fileNotExist = sheet_manager.addFile(self.filePath, self.sheet)
+        #print("File already exists.")
+        # If not make sheet -> sheet already exists
+        if(not sheet_manager.makeSheet(self.filePath, self.sheet)):
+            print("Sheet already exists")
+            return False
+        
 
-        if(not sheet_manager.addFile(self.filename, self.sheet)):
-            if(not sheet_manager.addSheet(self.filename, self.sheet)):
-                print("Cannot overwrite!")
-                return False
-        
         sheet_manager.addEntry(
-            self.filename, self.sheet,
-            [self.sheet, " ", " ", "Total:", "=SUM(E3:E10000)"])
+            self.filePath, self.sheet,
+            [self.sheet, " ", " ", "Total:", "=SUM(E4:E10000)"])
+
+        sheet_manager.addEntry(self.filePath, self.sheet, " ")
+
         sheet_manager.addEntry(
-            self.filename, self.sheet,
+            self.filePath, self.sheet,
             ["Store", "Location", "Date", "Time", "Price", "Type"])
+
         sheet_manager.addEntry(
-            self.filename, self.sheet,
-            " ")
+            self.filePath, self.sheet,
+            "----------------------------------------------------------------------------------")
         
+
         # Not working
-        sheet_manager.setColWidth(self.filename, self.sheet, 0, 100)
-        sheet_manager.setColWidth(self.filename, self.sheet, 1, 100)
-        sheet_manager.setColWidth(self.filename, self.sheet, 2, 50)
-        sheet_manager.setColWidth(self.filename, self.sheet, 3, 50)
-        sheet_manager.setColWidth(self.filename, self.sheet, 4, 100)
-        sheet_manager.setColWidth(self.filename, self.sheet, 5, 500)
+        sheet_manager.setColWidth(self.filePath, self.sheet, 0, 1000)
+        sheet_manager.setColWidth(self.filePath, self.sheet, 1, 1000)
+        sheet_manager.setColWidth(self.filePath, self.sheet, 2, 500)
+        sheet_manager.setColWidth(self.filePath, self.sheet, 3, 500)
+        sheet_manager.setColWidth(self.filePath, self.sheet, 4, 1000)
+        sheet_manager.setColWidth(self.filePath, self.sheet, 5, 5000)
 
         return True
