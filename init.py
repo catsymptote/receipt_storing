@@ -1,7 +1,6 @@
 from tkinter import *
 
 from lib import receipt_window
-from lib import file_manager
 from lib import sheet_manager
 
 
