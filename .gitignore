@@ -7,3 +7,6 @@ _output/
 *.xls
 *.xlsx
 .vscode/
+sheets/
+
+TODO.txt
