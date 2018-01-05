@@ -5,6 +5,8 @@ from xlrd import *
 from xlwt import *
 from openpyxl import load_workbook
 import os.path
+from shutil import copyfile
+from shutil import copyfileobj
 
 
 def addEntry(filename, sheet, entry):
@@ -18,6 +20,7 @@ def addEntry(filename, sheet, entry):
     if(sheetIndex == -1):
         #print("Sheet not found.")
         return False
+
     rowCount = sheets[sheetIndex].nrows
     #print(rowCount)
     sh = wb.get_sheet(sheetIndex)
@@ -97,12 +100,23 @@ def is_number(s):
 
 def makeSheet(filename, sheet):
     if(not os.path.exists(filename)):
-        addFile(filename, sheet)
-        return True
-    elif(addSheet(filename, sheet)):
+        default = defaultSheet(filename)
+        if(not default):
+            addFile(filename, sheet)
+            return True
+    if(addSheet(filename, sheet)):
         return True
     return False
     
+
+def defaultSheet(filename):
+    defaultFilePath = "excel_related/default.xls"
+
+    if(os.path.exists(defaultFilePath)):
+        print("Copies dafault file.")
+        copyfile(defaultFilePath, filename)
+        return True
+    return False
 
 
 def addSheet(filename, sheet):
@@ -124,9 +138,11 @@ def addSheet(filename, sheet):
     # Add sheet to workbook with existing sheets
     try:
         Sheet1 = wb.add_sheet(sheet)
+        # Remove "default" sheet if existing here?
     except Exception:
         #print("Sheet already exists")
         return False
+
     wb.save(filename)
     return True
 

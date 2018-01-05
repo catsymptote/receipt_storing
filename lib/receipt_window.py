@@ -10,6 +10,7 @@ class receipt_window:
     filename        = "test"
     fileExtension   = ".xls"
     filePath        = "sheets/default.xls"
+    
 
     sheet           = "12"
 
@@ -66,7 +67,6 @@ class receipt_window:
 
     def makeReceipt(self):
         #rept = receipt.receipt("Meny", "Kongsberg", "2017.11.24", "22:48", 299.90, "Food")
-
         Store   = self.entry_Store.get()
         Location= self.entry_Location.get()
         Date    = self.entry_Date.get()
@@ -74,8 +74,14 @@ class receipt_window:
         Price   = self.entry_Price.get()
         Type    = self.entry_Type.get()
 
+        # If entry rejected.
+        if(not self.rept_entry_check([Store, Location, Date, Time, Price, Type])):
+            print("Entry rejected. There is an issue with the entry.")
+            return False
+
         rept = receipt.receipt(Store, Location, Date, Time, Price, Type)
         reptEntry = rept.getAll()
+
 
         """
         print(rept.getYear())
@@ -84,7 +90,6 @@ class receipt_window:
 
         # If test: use different name
         testbox = self.test_checkbox.get()
-        print(testbox)
         if(not testbox == 0):
             self.filename   = "test_" + rept.getYear()
         else:
@@ -103,7 +108,29 @@ class receipt_window:
            # Clear entries
            self.clearEntries()
            print("Entry add successful!")
-        #print(rept.getAll())
+           return True
+        else:
+            print("Entry not added.")
+
+
+    def rept_entry_check(self, reptEntry):
+        # Has 6 entries
+        if(not len(reptEntry) == 6):
+            return False
+
+        # Each entry has a value
+        for i in range(len(reptEntry)):
+            if(not self.check_entry_cell(reptEntry[i])):
+                print("Empty entry section at cell " + str(i+1) + ".")
+                return False
+
+        return True
+        
+
+    def check_entry_cell(self, entryCell):
+        if(not entryCell or len(entryCell) < 1):
+            return False
+        return True
 
 
     def clearEntries(self):
@@ -119,7 +146,7 @@ class receipt_window:
         # If not make file -> file already exists
         #fileNotExist = sheet_manager.addFile(self.filePath, self.sheet)
         #print("File already exists.")
-        
+
         # If not make sheet -> sheet already exists
         if(not sheet_manager.makeSheet(self.filePath, self.sheet)):
             print("Sheet already exists")
