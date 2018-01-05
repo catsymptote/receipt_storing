@@ -93,7 +93,11 @@ class receipt_window:
 
         self.filePath = self.directory + self.filename + self.fileExtension
         
+        # Get sheet name (month)
+        self.sheet = str(rept.getMonth())
+
         self.initSheet()
+        
 
         if(sheet_manager.addEntry(self.filePath, self.sheet, reptEntry)):
            # Clear entries
@@ -115,6 +119,7 @@ class receipt_window:
         # If not make file -> file already exists
         #fileNotExist = sheet_manager.addFile(self.filePath, self.sheet)
         #print("File already exists.")
+        
         # If not make sheet -> sheet already exists
         if(not sheet_manager.makeSheet(self.filePath, self.sheet)):
             print("Sheet already exists")
@@ -124,7 +129,8 @@ class receipt_window:
 
         sheet_manager.addEntry(
             self.filePath, self.sheet,
-            [month, " ", " ", "Total:", "=SUM(E4:E10000)"])
+            [month, " ", " ", "Total:", "=SUM(E4:E10000)"]
+        )
 
         sheet_manager.addEntry(self.filePath, self.sheet, " ")
 

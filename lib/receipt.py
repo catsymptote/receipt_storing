@@ -64,11 +64,12 @@ class receipt:
         self.Month  = date[5] + date[6]
         self.Day    = date[8] + date[9]
 
-        """
+        
         print(self.Year)
         print(self.Month)
         print(self.Day)
-
+        
+        """
         print(date[0] + date[1] + date[2] + date[3])
         print(date[5] + date[6])
         print(date[8] + date[9])
