@@ -56,6 +56,7 @@ class receipt_window:
         self.add_button.grid(columnspan=3, row=6, column=1)
 
         self.test_checkbox   = IntVar()
+        self.test_checkbox.set(1)
         self.checkbox_one = Checkbutton(frame, text="Test?", variable=self.test_checkbox)
         self.checkbox_one.grid(columnspan=1, row=1, column=4)
 
@@ -82,10 +83,13 @@ class receipt_window:
         """
 
         # If test: use different name
-        if(self.test_checkbox):
+        testbox = self.test_checkbox.get()
+        print(testbox)
+        if(not testbox == 0):
             self.filename   = "test_" + rept.getYear()
         else:
             self.filename   = rept.getYear()
+        #self.filename   = rept.getYear()
 
         self.filePath = self.directory + self.filename + self.fileExtension
         
