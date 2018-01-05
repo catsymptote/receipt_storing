@@ -12,6 +12,8 @@ class receipt_window:
     filePath        = "sheets/default.xls"
 
     sheet           = "12"
+
+    test_checkbox   = ""
     
 
     def __init__(self, master_window):
@@ -53,8 +55,8 @@ class receipt_window:
         self.add_button = Button(frame, text="Add recipt", command=self.makeReceipt)
         self.add_button.grid(columnspan=3, row=6, column=1)
 
-
-        self.checkbox_one = Checkbutton(frame, text="Hi there")
+        self.test_checkbox   = IntVar()
+        self.checkbox_one = Checkbutton(frame, text="Test?", variable=self.test_checkbox)
         self.checkbox_one.grid(columnspan=1, row=1, column=4)
 
         self.init_button = Button(frame, text="Initialize", command=self.initSheet)
@@ -79,8 +81,11 @@ class receipt_window:
         print(rept.getMonth())
         """
 
-        self.filename   = rept.getYear()
-        self.sheet      = rept.getMonth()
+        # If test: use different name
+        if(self.test_checkbox):
+            self.filename   = "test_" + rept.getYear()
+        else:
+            self.filename   = rept.getYear()
 
         self.filePath = self.directory + self.filename + self.fileExtension
         
