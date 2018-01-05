@@ -38,7 +38,9 @@ def addEntry(filename, sheet, entry):
             # If number
             elif(is_number(entry[i])):
                 #print("Number: " + str(entry[i]))
-                sh.write(rowCount, i, label=entry[i])
+                # Replace '.' with ',' for excel reasons
+                tmp = entry[i].replace('.', ',')
+                sh.write(rowCount, i, label=tmp)
             # If formula
             elif(False and entry[i][0] == '='):
                 formula = entry[i][1:]
