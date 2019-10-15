@@ -146,7 +146,7 @@ class receipt_window:
     def initSheet(self):
         ##  If sheet is not made -> sheet already exists (probably).
         if(not sheet_manager.makeSheet(self.filePath, self.sheet)):
-            print("Sheet already exists")
+            #print("Sheet already exists")
             return False
         
 
